@@ -27,6 +27,29 @@ impl Terrain {
         self.size
     }
 
+    pub fn extents(&self) -> (f64, f64) {
+        let mut min = self.heights[0];
+        let mut max = self.heights[0];
+        for h in &self.heights {
+            if *h < min {
+                min = *h;
+            }
+            if *h > max {
+                max = *h;
+            } 
+        }
+        (min, max)
+    }
+
+    pub fn rescale(&mut self, new_min: f64, new_max: f64) {
+        let (old_min, old_max) = self.extents();
+        let a = (new_max - new_min) / (old_max - old_min);
+        let b = new_min - a * old_min;
+        for h in self.heights.iter_mut() {
+            *h = a * *h + b;
+        }
+    }
+
     fn index(&self, p: Position) -> usize {
         self.size * p.1 + p.0
     }
