@@ -3,8 +3,8 @@
 #[derive(Debug, Clone, Copy)]
 pub struct Position(pub usize, pub usize);
 
-pub trait Random {
-    fn random(&mut self, p: Position, unit: usize) -> f64;
+pub trait ExtrinsicFn {
+    fn evaluate(&mut self, p: Position, unit: usize) -> f64;
 }
 
 mod terrain;

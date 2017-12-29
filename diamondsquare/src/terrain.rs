@@ -1,4 +1,4 @@
-use super::{Position, Random};
+use super::{Position, ExtrinsicFn};
 
 #[derive(Debug)]
 pub struct Terrain {
@@ -34,7 +34,7 @@ impl Terrain {
 
 pub struct TerrainGenerator<'a> {
     order: u32,
-    rand: Option<&'a mut Random>,
+    ext_fn: Option<&'a mut ExtrinsicFn>,
     terrain: Terrain,
 }
 
@@ -46,13 +46,13 @@ impl<'a> TerrainGenerator<'a> {
     pub fn new(order: u32) -> TerrainGenerator<'a> {
         TerrainGenerator {
             order: order,
-            rand: None,
+            ext_fn: None,
             terrain: Terrain::new(size(order)),
         }
     }
 
-    pub fn set_randomizer(&mut self, rand: &'a mut Random) {
-        self.rand = Some(rand);
+    pub fn set_extrinsic_fn(&mut self, ext_fn: &'a mut ExtrinsicFn) {
+        self.ext_fn = Some(ext_fn);
     }
 
     pub fn generate(&mut self, h1: f64, h2: f64, h3: f64, h4: f64) {
@@ -89,7 +89,7 @@ impl<'a> TerrainGenerator<'a> {
     }
 
     fn square_step(&mut self, p: Position, unit: usize) {
-        let average_part = {
+        let intrinsic_part = {
             let Position(col, row) = p;
             let mut value = 0f64;
             value += self.terrain.get(Position(col - unit, row - unit));
@@ -99,12 +99,12 @@ impl<'a> TerrainGenerator<'a> {
             value / 4.0
         };
 
-        let height = average_part + self.get_random_part(p, unit);
+        let height = intrinsic_part + self.get_extrinsic_part(p, unit);
         self.terrain.set(p, height);
     }
 
     fn diamond_step(&mut self, p: Position, unit: usize) {
-        let average_part = {
+        let intrinsic_part = {
             let Position(col, row) = p;
             let (mut neighbors, mut value) = (0, 0f64);
             if col >= unit {
@@ -126,13 +126,13 @@ impl<'a> TerrainGenerator<'a> {
             value / neighbors as f64
         };
 
-        let height = average_part + self.get_random_part(p, unit);
+        let height = intrinsic_part + self.get_extrinsic_part(p, unit);
         self.terrain.set(p, height);
     }
 
-    fn get_random_part(&mut self, p: Position, unit: usize) -> f64 {
-        match self.rand {
-            Some(ref mut rand) => rand.random(p, unit),
+    fn get_extrinsic_part(&mut self, p: Position, unit: usize) -> f64 {
+        match self.ext_fn {
+            Some(ref mut f) => f.evaluate(p, unit),
             None => 0.0,
         }
     }

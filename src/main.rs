@@ -1,11 +1,11 @@
 extern crate diamondsquare;
 
-use diamondsquare::{Position, Random, TerrainGenerator};
+use diamondsquare::{Position, ExtrinsicFn, TerrainGenerator};
 
 struct MyRandom;
 
-impl Random for MyRandom {
-    fn random(&mut self, p: Position, unit: usize) -> f64 {
+impl ExtrinsicFn for MyRandom {
+    fn evaluate(&mut self, p: Position, unit: usize) -> f64 {
         0.0
     }
 }
@@ -13,7 +13,7 @@ impl Random for MyRandom {
 fn main() {
     let mut rand = MyRandom;
     let mut generator = TerrainGenerator::new(5);
-    generator.set_randomizer(&mut rand);
+    generator.set_extrinsic_fn(&mut rand);
     generator.generate(1.0, 10.0, 20.0, 40.0);
     println!("{:#?}", generator.get_terrain());
 }
