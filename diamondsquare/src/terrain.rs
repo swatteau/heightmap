@@ -3,24 +3,24 @@ use super::{Position, Random};
 #[derive(Debug)]
 pub struct Terrain {
     size: usize,
-    values: Vec<f64>,
+    heights: Vec<f64>,
 }
 
 impl Terrain {
     pub fn new(size: usize) -> Terrain {
         Terrain {
             size: size,
-            values: vec![0f64; size * size],
+            heights: vec![0f64; size * size],
         }
     }
 
     pub fn get(&self, p: Position) -> f64 {
-        self.values[self.index(p)]
+        self.heights[self.index(p)]
     }
 
     pub fn set(&mut self, p: Position, height: f64) {
         let index = self.index(p);
-        self.values[index] = height;
+        self.heights[index] = height;
     }
 
     pub fn size(&self) -> usize {
