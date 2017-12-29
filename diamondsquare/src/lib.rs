@@ -25,9 +25,13 @@ impl Terrain {
         self.values[self.index(p)]
     }
 
-    fn get_mut(&mut self, p: Position) -> &mut f64 {
+    pub fn set(&mut self, p: Position, height: f64) {
         let index = self.index(p);
-        &mut self.values[index]
+        self.values[index] = height;
+    }
+
+    pub fn size(&self) -> usize {
+        self.size
     }
 
     fn index(&self, p: Position) -> usize {
@@ -56,10 +60,10 @@ impl<'a> TerrainGenerator<'a> {
 
     pub fn generate(&mut self, h1: f64, h2: f64, h3: f64, h4: f64) {
         let s = size(self.order) - 1;
-        *self.terrain.get_mut(Position(0, 0)) = h1;
-        *self.terrain.get_mut(Position(0, s)) = h2;
-        *self.terrain.get_mut(Position(s, 0)) = h3;
-        *self.terrain.get_mut(Position(s, s)) = h4;
+        self.terrain.set(Position(0, 0), h1);
+        self.terrain.set(Position(0, s), h2);
+        self.terrain.set(Position(s, 0), h3);
+        self.terrain.set(Position(s, s), h4);
         for i in 0..self.order {
             self.step(i + 1)
         }
@@ -71,15 +75,16 @@ impl<'a> TerrainGenerator<'a> {
 
     fn step(&mut self, rank: u32) {
         let unit = 2usize.pow(self.order - rank);
+        let last_index = size(self.order) - 1;
 
-        for row in (unit..size(self.order) - 1).step_by(2 * unit) {
-            for col in (unit..size(self.order) - 1).step_by(2 * unit) {
+        for row in (unit..last_index).step_by(2 * unit) {
+            for col in (unit..last_index).step_by(2 * unit) {
                 self.square_step(Position(col, row), unit);
             }
         }
 
-        for row in (0..size(self.order)).step_by(2 * unit) {
-            for col in (unit..size(self.order) - 1).step_by(2 * unit) {
+        for row in (0..last_index + 1).step_by(2 * unit) {
+            for col in (unit..last_index).step_by(2 * unit) {
                 self.diamond_step(Position(col, row), unit);
                 self.diamond_step(Position(row, col), unit);
             }
@@ -97,7 +102,8 @@ impl<'a> TerrainGenerator<'a> {
             value / 4.0
         };
 
-        *self.terrain.get_mut(p) = average_part + self.get_random_part(p, unit);
+        let height = average_part + self.get_random_part(p, unit);
+        self.terrain.set(p, height);
     }
 
     fn diamond_step(&mut self, p: Position, unit: usize) {
@@ -108,7 +114,7 @@ impl<'a> TerrainGenerator<'a> {
                 value += self.terrain.get(Position(col - unit, row));
                 neighbors += 1;
             }
-            if col + unit < self.terrain.size {
+            if col + unit < self.terrain.size() {
                 value += self.terrain.get(Position(col + unit, row));
                 neighbors += 1;
             }
@@ -116,14 +122,15 @@ impl<'a> TerrainGenerator<'a> {
                 value += self.terrain.get(Position(col, row - unit));
                 neighbors += 1;
             }
-            if row + unit < self.terrain.size {
+            if row + unit < self.terrain.size() {
                 value += self.terrain.get(Position(col, row + unit));
                 neighbors += 1;
             }
             value / neighbors as f64
         };
 
-        *self.terrain.get_mut(p) = average_part + self.get_random_part(p, unit);
+        let height = average_part + self.get_random_part(p, unit);
+        self.terrain.set(p, height);
     }
 
     fn get_random_part(&mut self, p: Position, unit: usize) -> f64 {
