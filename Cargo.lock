@@ -1,0 +1,11 @@
+[[package]]
+name = "diamondsquare"
+version = "0.1.0"
+
+[[package]]
+name = "heightmap"
+version = "0.1.0"
+dependencies = [
+ "diamondsquare 0.1.0",
+]
+

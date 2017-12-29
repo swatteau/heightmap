@@ -1,0 +1,6 @@
+[package]
+name = "diamondsquare"
+version = "0.1.0"
+authors = ["Sébastien Watteau <swatteau@gmail.com>"]
+
+[dependencies]
