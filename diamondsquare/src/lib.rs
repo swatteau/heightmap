@@ -8,5 +8,6 @@ pub trait ExtrinsicFn {
 }
 
 mod terrain;
+pub mod extrinsic;
 
 pub use terrain::{Terrain, TerrainGenerator};
