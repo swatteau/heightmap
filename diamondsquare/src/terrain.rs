@@ -51,12 +51,15 @@ impl TerrainGenerator {
         }
     }
 
-    pub fn generate(&mut self, h1: f64, h2: f64, h3: f64, h4: f64) {
+    pub fn set_corners(&mut self, h1: f64, h2: f64, h3: f64, h4: f64) {
         let s = size(self.order) - 1;
         self.terrain.set(Position(0, 0), h1);
         self.terrain.set(Position(0, s), h2);
         self.terrain.set(Position(s, 0), h3);
         self.terrain.set(Position(s, s), h4);
+    }
+
+    pub fn generate(&mut self) {
         for i in 0..self.order {
             self.step(i + 1)
         }
