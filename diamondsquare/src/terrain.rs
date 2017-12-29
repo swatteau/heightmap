@@ -51,6 +51,10 @@ impl<'a> TerrainGenerator<'a> {
         }
     }
 
+    pub fn set_randomizer(&mut self, rand: &'a mut Random) {
+        self.rand = Some(rand);
+    }
+
     pub fn generate(&mut self, h1: f64, h2: f64, h3: f64, h4: f64) {
         let s = size(self.order) - 1;
         self.terrain.set(Position(0, 0), h1);
