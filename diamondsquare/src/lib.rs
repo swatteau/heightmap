@@ -64,7 +64,7 @@ impl<'a> Terrain<'a> {
             value / 4.0
         };
 
-        *self.get_mut(p) += average_part + self.get_random_part(p, unit);
+        *self.get_mut(p) = average_part + self.get_random_part(p, unit);
     }
 
     fn diamond_step(&mut self, p: Position, unit: usize) {
@@ -90,7 +90,7 @@ impl<'a> Terrain<'a> {
             value / neighbors as f64
         };
 
-        *self.get_mut(p) += average_part + self.get_random_part(p, unit);
+        *self.get_mut(p) = average_part + self.get_random_part(p, unit);
     }
 
     fn get_random_part(&mut self, p: Position, unit: usize) -> f64 {
