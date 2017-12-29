@@ -11,9 +11,7 @@ impl ExtrinsicFn for MyRandom {
 }
 
 fn main() {
-    let mut rand = MyRandom;
-    let mut generator = TerrainGenerator::new(5);
-    generator.set_extrinsic_fn(&mut rand);
+    let mut generator = TerrainGenerator::new(5, Box::new(MyRandom));
     generator.generate(1.0, 10.0, 20.0, 40.0);
     println!("{:#?}", generator.get_terrain());
 }

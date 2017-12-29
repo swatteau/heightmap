@@ -32,9 +32,9 @@ impl Terrain {
     }
 }
 
-pub struct TerrainGenerator<'a> {
+pub struct TerrainGenerator {
     order: u32,
-    ext_fn: Option<&'a mut ExtrinsicFn>,
+    ext_fn: Box<ExtrinsicFn>,
     terrain: Terrain,
 }
 
@@ -42,17 +42,13 @@ fn size(order: u32) -> usize {
     2usize.pow(order) + 1
 }
 
-impl<'a> TerrainGenerator<'a> {
-    pub fn new(order: u32) -> TerrainGenerator<'a> {
+impl TerrainGenerator {
+    pub fn new(order: u32, ext_fn: Box<ExtrinsicFn>) -> TerrainGenerator {
         TerrainGenerator {
             order: order,
-            ext_fn: None,
+            ext_fn: ext_fn,
             terrain: Terrain::new(size(order)),
         }
-    }
-
-    pub fn set_extrinsic_fn(&mut self, ext_fn: &'a mut ExtrinsicFn) {
-        self.ext_fn = Some(ext_fn);
     }
 
     pub fn generate(&mut self, h1: f64, h2: f64, h3: f64, h4: f64) {
@@ -99,7 +95,7 @@ impl<'a> TerrainGenerator<'a> {
             value / 4.0
         };
 
-        let height = intrinsic_part + self.get_extrinsic_part(p, unit);
+        let height = intrinsic_part + self.ext_fn.evaluate(p, unit);
         self.terrain.set(p, height);
     }
 
@@ -126,14 +122,7 @@ impl<'a> TerrainGenerator<'a> {
             value / neighbors as f64
         };
 
-        let height = intrinsic_part + self.get_extrinsic_part(p, unit);
+        let height = intrinsic_part + self.ext_fn.evaluate(p, unit);
         self.terrain.set(p, height);
-    }
-
-    fn get_extrinsic_part(&mut self, p: Position, unit: usize) -> f64 {
-        match self.ext_fn {
-            Some(ref mut f) => f.evaluate(p, unit),
-            None => 0.0,
-        }
     }
 }
