@@ -1,5 +1,7 @@
 #![feature(iterator_step_by)]
 
+extern crate rand;
+
 #[derive(Debug, Clone, Copy)]
 pub struct Position(pub usize, pub usize);
 
