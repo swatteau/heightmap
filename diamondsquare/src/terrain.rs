@@ -59,14 +59,11 @@ impl TerrainGenerator {
         self.terrain.set(Position(s, s), h4);
     }
 
-    pub fn generate(&mut self) {
+    pub fn generate(mut self) -> Terrain {
         for i in 0..self.order {
             self.step(i + 1)
         }
-    }
-
-    pub fn get_terrain(&self) -> &Terrain {
-        &self.terrain
+        self.terrain
     }
 
     fn step(&mut self, rank: u32) {
