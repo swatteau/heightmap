@@ -7,7 +7,12 @@ def hexcolor(r, g, b):
 
 def main(args):
 
-    path = "/home/sebastien/terrain.dat"
+    try:
+        path = args[1]
+    except:
+        path = "/home/sebastien/terrain.dat"
+
+    print(path)
     with open(path, 'rb') as f:
         bytes = f.read()
 
@@ -24,7 +29,7 @@ def main(args):
             h = bytes[b]
             b+=1
             if h < 60:
-                img.put(hexcolor(0, 0, h), (x, y))
+                img.put(hexcolor(int(0.1*h), int(0.5*h), max(20,h)), (x, y))
             elif h == 60:
                 img.put(hexcolor(int(0.5*h), int(0.5*h), h), (x, y))
             elif h == 61:
@@ -34,7 +39,7 @@ def main(args):
             else:
                 if h % 10 == 0:
                     #img.put(hexcolor(140,80,80), (x, y))
-                    img.put(hexcolor(int(0.2*h), int(0.4*h), 0), (x, y))
+                    img.put(hexcolor(int(0.23*h), int(0.46*h), 0), (x, y))
                 else:
                     img.put(hexcolor(int(0.25*h), int(0.5*h), 0), (x, y))
 
