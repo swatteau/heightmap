@@ -13,10 +13,13 @@
 // limitations under the License.use super::{ExtrinsicFn, Position};
 
 extern crate diamondsquare;
+extern crate clap;
 
 use std::path::Path;
 use std::fs::File;
 use std::io::{BufWriter, Write};
+use std::str::FromStr;
+use clap::{App, Arg};
 
 use diamondsquare::{Position, Terrain, TerrainGenerator};
 use diamondsquare::extrinsic;
@@ -37,9 +40,52 @@ fn write_to_file<P: AsRef<Path>>(path: P, terrain: &Terrain) {
 }
 
 fn main() {
+    let matches = App::new("heightmap")
+        .version("0.1")
+        .about("Height map generator based on the diamond-square algorithm")
+        .author("Sébastien Watteau")
+        .arg(Arg::with_name("OUTPUT")
+                .help("Path to the output file")
+                .required(true))
+        .arg(Arg::with_name("r")
+                .long("range")
+                .short("r")
+                .takes_value(true)
+                .number_of_values(2)
+                .required(false)
+                .help("Sets the range of values of the final map (defaults to [0, 255])"))
+        .arg(Arg::with_name("h")
+                .long("corners")
+                .short("c")
+                .takes_value(true)
+                .number_of_values(4)
+                .required(false)
+                .help("Sets the initial heights at the corners of the map (defaults to 0 at each corner)"))
+        .get_matches();
+
+    let output_path = matches.value_of("OUTPUT").unwrap();
+    let (range_min, range_max) = match matches.values_of("r") {
+        None => (0.0, 255.0),
+        Some(mut values) => {
+            let min = f64::from_str(values.next().unwrap()).unwrap();
+            let max = f64::from_str(values.next().unwrap()).unwrap();
+            (min, max)
+        }
+    };
+    let (h1, h2, h3, h4) = match matches.values_of("h") {
+        None => (0.0, 0.0, 0.0, 0.0),
+        Some(mut values) => {
+            let h1 = f64::from_str(values.next().unwrap()).unwrap();
+            let h2 = f64::from_str(values.next().unwrap()).unwrap();
+            let h3 = f64::from_str(values.next().unwrap()).unwrap();
+            let h4 = f64::from_str(values.next().unwrap()).unwrap();
+            (h1, h2, h3, h4)
+        }
+    };
+
     let mut generator = TerrainGenerator::new(10, Box::new(extrinsic::PositionIndependent));
-    generator.set_corners(1.0, 10.0, 20.0, 40.0);
+    generator.set_corners(h1, h2, h3, h4);
     let mut terrain = generator.generate();
-    terrain.rescale(0.0, 255.0);
-    write_to_file("/home/sebastien/terrain.dat", &terrain);
+    terrain.rescale(range_min, range_max);
+    write_to_file(output_path, &terrain);
 }

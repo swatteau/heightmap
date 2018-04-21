@@ -5,3 +5,4 @@ authors = ["Sébastien Watteau <swatteau@gmail.com>"]
 
 [dependencies]
 diamondsquare = { path = "diamondsquare" }
+clap = "2.21.2"
