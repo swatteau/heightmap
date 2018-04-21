@@ -43,25 +43,26 @@ def main(args):
     img = PhotoImage(width=size, height=size)
     canvas.create_image((size/2, size/2), image=img, state="normal")
 
+    sea_level = 80
+
     b = 0
     for y in range(size):
         for x in range(size):
             h = bytes[b]
             b+=1
-            if h < 60:
+            if h < sea_level:
                 if h % 5 == 0:
                     img.put(hexcolor(int(0.12*h), int(0.60*h), max(20,h)), (x, y))
                 else:
                     img.put(hexcolor(int(0.1*h), int(0.5*h), max(20,h)), (x, y))
-            elif h == 60:
+            elif h == sea_level:
                 img.put(hexcolor(int(0.5*h), int(0.5*h), h), (x, y))
-            elif h == 61:
+            elif h == sea_level + 1:
                 img.put(hexcolor(h, h, h), (x, y))
-            elif h == 62:
+            elif h == sea_level + 2:
                 img.put(hexcolor(int(2*h), int(1.5*h), int(0.85*h)), (x, y))
             else:
                 if h % 10 == 0:
-                    #img.put(hexcolor(140,80,80), (x, y))
                     img.put(hexcolor(int(0.23*h), int(0.46*h), 0), (x, y))
                 else:
                     img.put(hexcolor(int(0.25*h), int(0.5*h), 0), (x, y))
