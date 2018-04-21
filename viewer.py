@@ -16,6 +16,11 @@ import sys
 import math
 from tkinter import Tk, Canvas, PhotoImage, mainloop
 
+def show_usage():
+    print("Usage: python viewer.py <file>")
+    print("where:")
+    print("    <file>: path to a data file produced by the heightmap program")
+
 def hexcolor(r, g, b):
     return '#%02x%02x%02x' % (r, g, b)
 
@@ -24,9 +29,10 @@ def main(args):
     try:
         path = args[1]
     except:
-        path = "/home/sebastien/terrain.dat"
+        show_usage()
+        return -1
 
-    print(path)
+    print("Rendering file %s..." % path)
     with open(path, 'rb') as f:
         bytes = f.read()
 
