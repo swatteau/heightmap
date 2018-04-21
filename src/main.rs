@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.use super::{ExtrinsicFn, Position};
 
-extern crate diamondsquare;
 extern crate clap;
+extern crate diamondsquare;
 
-use std::path::Path;
+use clap::{App, Arg};
 use std::fs::File;
 use std::io::{BufWriter, Write};
+use std::path::Path;
 use std::str::FromStr;
-use clap::{App, Arg};
 
-use diamondsquare::{Position, Terrain, TerrainGenerator};
 use diamondsquare::extrinsic;
+use diamondsquare::{Position, Terrain, TerrainGenerator};
 
 fn write_to_file<P: AsRef<Path>>(path: P, terrain: &Terrain) {
     let size = terrain.size();

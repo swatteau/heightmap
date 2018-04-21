@@ -23,7 +23,7 @@ pub trait ExtrinsicFn {
     fn evaluate(&mut self, p: Position, unit: usize) -> f64;
 }
 
-mod terrain;
 pub mod extrinsic;
+mod terrain;
 
 pub use terrain::{Terrain, TerrainGenerator};

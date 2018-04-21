@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.use super::{ExtrinsicFn, Position};
 
-use super::{Position, ExtrinsicFn};
+use super::{ExtrinsicFn, Position};
 
 #[derive(Debug)]
 pub struct Terrain {
@@ -50,7 +50,7 @@ impl Terrain {
             }
             if *h > max {
                 max = *h;
-            } 
+            }
         }
         (min, max)
     }
