@@ -23,7 +23,7 @@ pub struct Terrain {
 impl Terrain {
     pub fn new(size: usize) -> Terrain {
         Terrain {
-            size: size,
+            size,
             heights: vec![0f64; size * size],
         }
     }
@@ -59,8 +59,8 @@ impl Terrain {
         let (old_min, old_max) = self.extents();
         let a = (new_max - new_min) / (old_max - old_min);
         let b = new_min - a * old_min;
-        for h in self.heights.iter_mut() {
-            *h = a * *h + b;
+        for h in &mut self.heights {
+            *h = *h * a + b;
         }
     }
 
@@ -82,8 +82,8 @@ fn size(order: u32) -> usize {
 impl TerrainGenerator {
     pub fn new(order: u32, ext_fn: Box<ExtrinsicFn>) -> TerrainGenerator {
         TerrainGenerator {
-            order: order,
-            ext_fn: ext_fn,
+            order,
+            ext_fn,
             terrain: Terrain::new(size(order)),
         }
     }
@@ -156,7 +156,7 @@ impl TerrainGenerator {
                 value += self.terrain.get(Position(col, row + unit));
                 neighbors += 1;
             }
-            value / neighbors as f64
+            value / f64::from(neighbors)
         };
 
         let height = intrinsic_part + self.ext_fn.evaluate(p, unit);

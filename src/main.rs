@@ -36,7 +36,7 @@ fn write_to_file<P: AsRef<Path>>(path: P, terrain: &Terrain) {
 
     let file = File::create(path).unwrap();
     let mut buf = BufWriter::new(file);
-    buf.write(&bytes).unwrap();
+    buf.write_all(&bytes).unwrap();
 }
 
 fn main() {
