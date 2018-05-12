@@ -14,7 +14,7 @@ Type the following command to view the resulting map:
 
 ## Example
 
-![Sample map](example/map.png)
+![Sample map](example/maps.gif)
 
 ## License
 
